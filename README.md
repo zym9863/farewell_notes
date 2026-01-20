@@ -1,16 +1,137 @@
-# farewell_notes
+# 告别笔记 (Farewell Notes) 📝💌
 
-A new Flutter project.
+一款帮助用户进行情感告别的 Flutter 应用，通过**时空胶囊信箱**和**数字痕迹清理**两大核心功能，让用户在数字世界中完成情感的了结与释怀。
 
-## Getting Started
+## ✨ 功能特性
 
-This project is a starting point for a Flutter application.
+### 💌 时空胶囊信箱
 
-A few resources to get you started if this is your first Flutter project:
+给未来的自己或特定的人写一封信，设定解锁时间，信件在到达时间前保持封存状态。
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- 📝 创建和编辑胶囊信件
+- ⏰ 设置解锁时间（未来的任意时刻）
+- 👤 选择收件人类型（自己/特定的人/某段记忆）
+- 🔐 解锁前无法查看信件内容
+- 🔔 解锁时推送通知提醒
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 🧹 数字痕迹清理
+
+帮助用户整理与告别对象相关的数字痕迹。
+
+- 👥 添加和管理告别对象
+- 🔍 关键词智能扫描
+- 📸 相册照片扫描（需授权）
+- 📋 扫描结果分类展示
+- 📦 归档/隐藏/删除操作
+
+> **注意**: 由于移动端权限限制，第三方社交媒体数据扫描为模拟演示功能。
+
+## 🎨 设计理念
+
+采用**情感化设计**，传递温暖与疗愈感：
+
+| 元素 | 设计方案 |
+|------|----------|
+| 🎨 配色 | 暖色调渐变 (琥珀色 → 珊瑚色)，深色模式采用深紫 → 深蓝 |
+| ✍️ 字体 | 手写风格标题 + 清晰正文 |
+| 💫 动效 | 胶囊开启动画、信纸展开效果、粒子消散效果 |
+| 🔮 图标 | 圆润线性图标，传递柔和感 |
+| 🪟 卡片 | 毛玻璃效果 + 微妙阴影 |
+
+## 🏗️ 项目结构
+
+```
+lib/
+├── main.dart                        # 应用入口
+├── models/
+│   ├── time_capsule.dart            # 时空胶囊模型
+│   ├── farewell_target.dart         # 告别对象模型
+│   └── scan_record.dart             # 扫描记录模型
+├── screens/
+│   ├── splash_screen.dart           # 启动页
+│   ├── home_screen.dart             # 主页/导航
+│   ├── capsule_list_screen.dart     # 胶囊列表
+│   ├── capsule_editor_screen.dart   # 胶囊编辑器
+│   ├── capsule_detail_screen.dart   # 胶囊详情
+│   ├── targets_screen.dart          # 告别对象管理
+│   └── scan_screen.dart             # 扫描结果
+├── services/
+│   ├── database_service.dart        # 数据库服务 (SQLite)
+│   ├── notification_service.dart    # 通知服务
+│   └── scan_service.dart            # 扫描服务
+├── providers/
+│   ├── capsule_provider.dart        # 胶囊状态管理
+│   └── target_provider.dart         # 告别对象状态管理
+├── widgets/
+│   ├── capsule_card.dart            # 胶囊卡片组件
+│   └── target_card.dart             # 告别对象卡片组件
+└── utils/
+    └── app_theme.dart               # 主题配置
+```
+
+## 🛠️ 技术栈
+
+- **框架**: Flutter 3.x
+- **状态管理**: Provider
+- **数据持久化**: SQLite (sqflite)
+- **本地通知**: flutter_local_notifications
+- **相册访问**: photo_manager
+- **动画**: flutter_animate
+- **其他**: intl (日期格式化), uuid (UUID生成), timezone (时区处理)
+
+## 🚀 快速开始
+
+### 环境要求
+
+- Flutter SDK ^3.9.2
+- Dart SDK ^3.9.2
+
+### 安装步骤
+
+1. **克隆仓库**
+   ```bash
+   git clone https://github.com/zym9863/farewell_notes.git
+   cd farewell_notes
+   ```
+
+2. **获取依赖**
+   ```bash
+   flutter pub get
+   ```
+
+3. **运行应用**
+   ```bash
+   # Windows 桌面
+   flutter run -d windows
+
+   # Web 浏览器
+   flutter run -d chrome
+
+   # 连接的移动设备
+   flutter run
+   ```
+
+## 📱 支持平台
+
+| 平台 | 状态 |
+|------|------|
+| 🪟 Windows | ✅ 支持 |
+| 🌐 Web | ✅ 支持 |
+| 🍎 macOS | ✅ 支持 |
+| 🐧 Linux | ✅ 支持 |
+| 📱 Android | ✅ 支持 |
+| 📱 iOS | ✅ 支持 |
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 详情请参阅 [LICENSE](LICENSE) 文件。
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+---
+
+<p align="center">
+  用心告别，温柔放手 💝
+</p>
