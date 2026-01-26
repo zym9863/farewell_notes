@@ -1,5 +1,8 @@
 import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 
@@ -19,6 +22,12 @@ class NotificationService {
     if (_isInitialized) return;
 
     tz_data.initializeTimeZones();
+    try {
+      final timeZoneName = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(timeZoneName));
+    } catch (_) {
+      tz.setLocalLocation(tz.getLocation('UTC'));
+    }
 
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
@@ -78,36 +87,46 @@ class NotificationService {
     required String title,
     required DateTime unlockTime,
   }) async {
+    await initialize();
     final notificationId = capsuleId.hashCode;
 
     // 如果解锁时间已过，不调度通知
     if (unlockTime.isBefore(DateTime.now())) return;
 
-    await _notifications.zonedSchedule(
-      notificationId,
-      '🎁 时空胶囊已解锁',
-      '$title - 您的告别信已经可以打开了',
-      tz.TZDateTime.from(unlockTime, tz.local),
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          'capsule_unlock',
-          '时空胶囊',
-          channelDescription: '时空胶囊解锁通知',
-          importance: Importance.high,
-          priority: Priority.high,
-          icon: '@mipmap/ic_launcher',
+    // 桌面端（Windows/Linux）不支持定时通知，直接跳过
+    if (kIsWeb || !(Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
+      return;
+    }
+
+    try {
+      await _notifications.zonedSchedule(
+        notificationId,
+        '🎁 时空胶囊已解锁',
+        '$title - 您的告别信已经可以打开了',
+        tz.TZDateTime.from(unlockTime, tz.local),
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            'capsule_unlock',
+            '时空胶囊',
+            channelDescription: '时空胶囊解锁通知',
+            importance: Importance.high,
+            priority: Priority.high,
+            icon: '@mipmap/ic_launcher',
+          ),
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
         ),
-        iOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
-      ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      payload: capsuleId,
-    );
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: capsuleId,
+      );
+    } on UnimplementedError {
+      // 某些平台不支持定时通知，忽略即可
+    }
   }
 
   /// 取消胶囊通知

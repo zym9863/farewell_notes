@@ -37,11 +37,13 @@ dependencies:
   
   # 数据持久化
   sqflite: ^2.3.0
+  sqflite_common_ffi: ^2.3.0
   path: ^1.8.3
   shared_preferences: ^2.2.2
   
   # 本地通知
   flutter_local_notifications: ^16.3.0
+  flutter_timezone: ^1.0.8
   
   # 日期时间处理
   intl: ^0.18.1
