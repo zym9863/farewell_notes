@@ -104,7 +104,11 @@ class CapsuleProvider extends ChangeNotifier {
   Future<void> deleteCapsule(String id) async {
     try {
       await _db.deleteCapsule(id);
-      await _notifications.cancelCapsuleNotification(id);
+      try {
+        await _notifications.cancelCapsuleNotification(id);
+      } catch (_) {
+        // 某些平台不支持通知取消，忽略即可
+      }
 
       _capsules.removeWhere((c) => c.id == id);
       notifyListeners();

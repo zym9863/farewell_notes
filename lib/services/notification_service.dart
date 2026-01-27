@@ -131,7 +131,17 @@ class NotificationService {
 
   /// 取消胶囊通知
   Future<void> cancelCapsuleNotification(String capsuleId) async {
-    await _notifications.cancel(capsuleId.hashCode);
+    // 桌面端（Windows/Linux）不支持通知，直接跳过
+    if (kIsWeb || !(Platform.isAndroid || Platform.isIOS || Platform.isMacOS)) {
+      return;
+    }
+
+    try {
+      await initialize();
+      await _notifications.cancel(capsuleId.hashCode);
+    } on UnimplementedError {
+      // 某些平台不支持取消通知，忽略即可
+    }
   }
 
   /// 显示即时通知
