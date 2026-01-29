@@ -21,21 +21,24 @@ class CapsuleCard extends StatelessWidget {
     final isUnlocked = capsule.isUnlocked || capsule.canUnlock;
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.25),
+            ),
             gradient: isUnlocked
                 ? LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppTheme.primaryLight.withOpacity(0.1),
-                      AppTheme.secondaryLight.withOpacity(0.05),
+                      theme.colorScheme.primary.withOpacity(0.12),
+                      theme.colorScheme.secondary.withOpacity(0.05),
                     ],
                   )
                 : null,
@@ -43,27 +46,36 @@ class CapsuleCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 头部：图标 + 标题 + 状态
               Row(
                 children: [
-                  // 胶囊图标
                   Container(
-                    width: 48,
-                    height: 48,
+                    width: 50,
+                    height: 50,
                     decoration: BoxDecoration(
-                      color: isUnlocked
-                          ? AppTheme.primaryLight
-                          : Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(14),
+                      gradient: isUnlocked
+                          ? LinearGradient(
+                              colors: [
+                                AppTheme.primaryLight,
+                                AppTheme.secondaryLight,
+                              ],
+                            )
+                          : LinearGradient(
+                              colors: [
+                                theme.colorScheme.surfaceVariant,
+                                theme.colorScheme.surface,
+                              ],
+                            ),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: Icon(
                       isUnlocked ? Icons.mail_outline : Icons.lock_outline,
-                      color: Colors.white,
+                      color: isUnlocked
+                          ? Colors.white
+                          : theme.colorScheme.onSurface.withOpacity(0.6),
                       size: 24,
                     ),
                   ),
                   const SizedBox(width: 14),
-                  // 标题和收件人
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,72 +98,78 @@ class CapsuleCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // 删除按钮
                   if (onDelete != null)
                     IconButton(
                       icon: const Icon(Icons.delete_outline),
                       onPressed: onDelete,
-                      color: Colors.grey,
+                      color: theme.colorScheme.onSurface.withOpacity(0.5),
                       iconSize: 20,
                     ),
                 ],
               ),
-              const SizedBox(height: 16),
-              // 时间信息
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      isUnlocked ? Icons.check_circle_outline : Icons.schedule,
-                      size: 16,
-                      color: isUnlocked
-                          ? Colors.green
-                          : AppTheme.secondaryLight,
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 10,
+                runSpacing: 8,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      isUnlocked
-                          ? '已解锁 - 可以打开了'
-                          : _formatRemainingTime(capsule.remainingTime),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: isUnlocked
-                            ? Colors.green
-                            : theme.colorScheme.onSurface.withOpacity(0.7),
-                        fontWeight: FontWeight.w500,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: theme.colorScheme.outline.withOpacity(0.2),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              // 心情标签
-              if (capsule.mood != null) ...[
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppTheme.tertiaryLight.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    capsule.mood!,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppTheme.tertiaryLight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isUnlocked
+                              ? Icons.check_circle_outline
+                              : Icons.schedule,
+                          size: 16,
+                          color: isUnlocked
+                              ? const Color(0xFF3C9F6C)
+                              : theme.colorScheme.secondary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          isUnlocked
+                              ? '已解锁 · 可阅读'
+                              : _formatRemainingTime(capsule.remainingTime),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: isUnlocked
+                                ? const Color(0xFF3C9F6C)
+                                : theme.colorScheme.onSurface.withOpacity(0.75),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  if (capsule.mood != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppTheme.tertiaryLight.withOpacity(0.16),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        capsule.mood!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: AppTheme.tertiaryLight,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ],
           ),
         ),

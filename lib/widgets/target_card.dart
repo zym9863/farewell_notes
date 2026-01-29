@@ -22,46 +22,42 @@ class TargetCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(18),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 头部：头像 + 名称 + 操作
               Row(
                 children: [
-                  // 头像
                   Container(
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         colors: [
                           AppTheme.primaryLight,
                           AppTheme.secondaryLight,
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(18),
                     ),
                     child: Center(
                       child: Text(
                         target.name.isNotEmpty
                             ? target.name[0].toUpperCase()
                             : '?',
-                        style: const TextStyle(
+                        style: theme.textTheme.titleLarge?.copyWith(
                           color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  // 名称和统计
+                  const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,15 +76,17 @@ class TargetCard extends StatelessWidget {
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: target.matchCount > 0
                                 ? AppTheme.secondaryLight
-                                : Colors.grey,
+                                : theme.colorScheme.onSurface.withOpacity(0.5),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  // 操作按钮
                   PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert),
+                    icon: Icon(
+                      Icons.more_horiz,
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
                     onSelected: (value) {
                       switch (value) {
                         case 'scan':
@@ -128,9 +126,8 @@ class TargetCard extends StatelessWidget {
                   ),
                 ],
               ),
-              // 关键词标签
               if (target.keywords.isNotEmpty) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -141,26 +138,29 @@ class TargetCard extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryLight.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
+                        color: AppTheme.primaryLight.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: AppTheme.primaryLight.withOpacity(0.2),
+                        ),
                       ),
                       child: Text(
                         keyword,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: AppTheme.primaryLight,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     );
                   }).toList(),
                 ),
               ],
-              // 备注
               if (target.note != null && target.note!.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Text(
                   target.note!,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: Colors.grey,
+                    color: theme.colorScheme.onSurface.withOpacity(0.6),
                     fontStyle: FontStyle.italic,
                   ),
                   maxLines: 2,

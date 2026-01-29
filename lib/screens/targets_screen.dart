@@ -34,31 +34,14 @@ class _TargetsScreenState extends State<TargetsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '数字痕迹清理',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '管理告别对象，清理相关数字痕迹',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
-                  ),
-                ],
-              ),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: _buildHeroHeader(theme),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: _buildInfoCard(theme),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Expanded(
               child: Consumer<TargetProvider>(
                 builder: (context, provider, child) {
@@ -68,8 +51,8 @@ class _TargetsScreenState extends State<TargetsScreen> {
                   if (provider.targets.isEmpty) {
                     return _buildEmptyState(theme);
                   }
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 100),
+                  return ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
                     itemCount: provider.targets.length,
                     itemBuilder: (context, index) {
                       final target = provider.targets[index];
@@ -80,6 +63,9 @@ class _TargetsScreenState extends State<TargetsScreen> {
                         onDelete: () => _confirmDelete(target),
                       );
                     },
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 4,
+                    ),
                   );
                 },
               ),
@@ -101,18 +87,35 @@ class _TargetsScreenState extends State<TargetsScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDark
-            ? AppTheme.tertiaryDark.withOpacity(0.2)
-            : AppTheme.tertiaryLight.withOpacity(0.15),
+            ? AppTheme.tertiaryDark.withOpacity(0.18)
+            : AppTheme.tertiaryLight.withOpacity(0.12),
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.2),
+        ),
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline, color: AppTheme.tertiaryLight),
-          const SizedBox(width: 14),
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              Icons.info_outline,
+              color: isDark ? AppTheme.tertiaryDark : AppTheme.tertiaryLight,
+              size: 18,
+            ),
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               '添加告别对象，扫描并清理与TA相关的内容。',
-              style: theme.textTheme.bodySmall,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
+              ),
             ),
           ),
         ],
@@ -125,13 +128,131 @@ class _TargetsScreenState extends State<TargetsScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.person_off_outlined,
-            size: 64,
-            color: Colors.grey.shade300,
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceVariant.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Icon(
+              Icons.person_off_outlined,
+              size: 32,
+              color: theme.colorScheme.onSurface.withOpacity(0.5),
+            ),
           ),
           const SizedBox(height: 16),
-          Text('还没有添加告别对象', style: TextStyle(color: Colors.grey.shade500)),
+          Text(
+            '还没有添加告别对象',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeroHeader(ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+    return Container(
+      height: 170,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark
+              ? [
+                  AppTheme.tertiaryDark.withOpacity(0.35),
+                  AppTheme.secondaryDark.withOpacity(0.15),
+                ]
+              : [
+                  AppTheme.tertiaryLight.withOpacity(0.18),
+                  AppTheme.secondaryLight.withOpacity(0.08),
+                ],
+        ),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.2),
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            left: -40,
+            top: -30,
+            child: Container(
+              width: 140,
+              height: 140,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.colorScheme.primary.withOpacity(0.12),
+              ),
+            ),
+          ),
+          Positioned(
+            right: -20,
+            bottom: -30,
+            child: Container(
+              width: 160,
+              height: 160,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.secondary.withOpacity(0.18),
+                    theme.colorScheme.primary.withOpacity(0.04),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 22, 20, 22),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '数字痕迹清理',
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      '管理告别对象，清理相关数字痕迹',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.65),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface.withOpacity(0.75),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: theme.colorScheme.outline.withOpacity(0.2),
+                    ),
+                  ),
+                  child: Text(
+                    '一键追踪、温柔清理',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.onSurface.withOpacity(0.75),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

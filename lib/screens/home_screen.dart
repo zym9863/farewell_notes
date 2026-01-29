@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import '../utils/app_theme.dart';
 import 'capsule_list_screen.dart';
@@ -30,55 +32,75 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
+              color: Colors.black.withOpacity(isDark ? 0.35 : 0.08),
+              blurRadius: 24,
+              offset: const Offset(0, -6),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          child: NavigationBar(
-            selectedIndex: _currentIndex,
-            onDestinationSelected: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            backgroundColor: theme.colorScheme.surface,
-            indicatorColor: isDark
-                ? AppTheme.primaryDark.withOpacity(0.2)
-                : AppTheme.primaryLight.withOpacity(0.2),
-            height: 72,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            destinations: [
-              NavigationDestination(
-                icon: Icon(
-                  Icons.mail_outline,
-                  color: _currentIndex == 0
-                      ? (isDark ? AppTheme.primaryDark : AppTheme.primaryLight)
-                      : Colors.grey,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+            child: NavigationBarTheme(
+              data: NavigationBarThemeData(
+                labelTextStyle: WidgetStatePropertyAll(
+                  theme.textTheme.labelLarge,
                 ),
-                selectedIcon: Icon(
-                  Icons.mail,
-                  color: isDark ? AppTheme.primaryDark : AppTheme.primaryLight,
+                indicatorColor: isDark
+                    ? AppTheme.primaryDark.withOpacity(0.18)
+                    : AppTheme.primaryLight.withOpacity(0.16),
+                backgroundColor: theme.colorScheme.surface.withOpacity(
+                  isDark ? 0.7 : 0.9,
                 ),
-                label: '时空胶囊',
               ),
-              NavigationDestination(
-                icon: Icon(
-                  Icons.person_outline,
-                  color: _currentIndex == 1
-                      ? (isDark ? AppTheme.primaryDark : AppTheme.primaryLight)
-                      : Colors.grey,
-                ),
-                selectedIcon: Icon(
-                  Icons.person,
-                  color: isDark ? AppTheme.primaryDark : AppTheme.primaryLight,
-                ),
-                label: '告别对象',
+              child: NavigationBar(
+                selectedIndex: _currentIndex,
+                onDestinationSelected: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                height: 76,
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+                destinations: [
+                  NavigationDestination(
+                    icon: Icon(
+                      Icons.mail_outline,
+                      color: _currentIndex == 0
+                          ? (isDark
+                              ? AppTheme.primaryDark
+                              : AppTheme.primaryLight)
+                          : theme.colorScheme.onSurface.withOpacity(0.5),
+                    ),
+                    selectedIcon: Icon(
+                      Icons.mail,
+                      color: isDark
+                          ? AppTheme.primaryDark
+                          : AppTheme.primaryLight,
+                    ),
+                    label: '时空胶囊',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(
+                      Icons.person_outline,
+                      color: _currentIndex == 1
+                          ? (isDark
+                              ? AppTheme.primaryDark
+                              : AppTheme.primaryLight)
+                          : theme.colorScheme.onSurface.withOpacity(0.5),
+                    ),
+                    selectedIcon: Icon(
+                      Icons.person,
+                      color: isDark
+                          ? AppTheme.primaryDark
+                          : AppTheme.primaryLight,
+                    ),
+                    label: '告别对象',
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/providers.dart';
+import '../utils/app_theme.dart';
 import '../widgets/widgets.dart';
 import 'capsule_editor_screen.dart';
 import 'capsule_detail_screen.dart';
@@ -45,38 +46,31 @@ class _CapsuleListScreenState extends State<CapsuleListScreen>
           children: [
             // 头部
             Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '时空胶囊信箱',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '写给未来的告别信',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
-                  ),
-                ],
-              ),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: _buildHeroHeader(theme),
             ),
             // Tab栏
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 24),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withOpacity(0.35),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 18,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
               ),
               child: TabBar(
                 controller: _tabController,
                 indicator: BoxDecoration(
                   color: theme.colorScheme.primary,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 labelColor: Colors.white,
                 unselectedLabelColor: theme.colorScheme.onSurface.withOpacity(
@@ -84,13 +78,14 @@ class _CapsuleListScreenState extends State<CapsuleListScreen>
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerHeight: 0,
+                labelStyle: theme.textTheme.labelLarge,
                 tabs: const [
                   Tab(text: '待解锁'),
                   Tab(text: '已解锁'),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             // 列表内容
             Expanded(
               child: Consumer<CapsuleProvider>(
@@ -140,16 +135,42 @@ class _CapsuleListScreenState extends State<CapsuleListScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(emptyIcon, size: 64, color: Colors.grey.shade300),
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .surfaceVariant
+                    .withOpacity(0.8),
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: Icon(
+                emptyIcon,
+                size: 34,
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withOpacity(0.5),
+              ),
+            ),
             const SizedBox(height: 16),
-            Text(emptyMessage, style: TextStyle(color: Colors.grey.shade500)),
+            Text(
+              emptyMessage,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
+                  ),
+            ),
           ],
         ),
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.only(bottom: 100),
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
       itemCount: capsules.length,
       itemBuilder: (context, index) {
         final capsule = capsules[index];
@@ -159,6 +180,112 @@ class _CapsuleListScreenState extends State<CapsuleListScreen>
           onDelete: () => _confirmDeleteCapsule(context, capsule),
         );
       },
+      separatorBuilder: (context, index) => const SizedBox(height: 4),
+    );
+  }
+
+  Widget _buildHeroHeader(ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+    return Container(
+      height: 170,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark
+              ? [
+                  AppTheme.secondaryDark.withOpacity(0.45),
+                  AppTheme.primaryDark.withOpacity(0.2),
+                ]
+              : [
+                  AppTheme.primaryLight.withOpacity(0.12),
+                  AppTheme.secondaryLight.withOpacity(0.08),
+                ],
+        ),
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.2),
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -20,
+            top: -30,
+            child: Container(
+              width: 140,
+              height: 140,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary.withOpacity(0.25),
+                    theme.colorScheme.secondary.withOpacity(0.05),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: -30,
+            bottom: -40,
+            child: Container(
+              width: 160,
+              height: 160,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: theme.colorScheme.secondary.withOpacity(0.08),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 22, 20, 22),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '时空胶囊信箱',
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      '写给未来的告别信',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.65),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface.withOpacity(0.75),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: theme.colorScheme.outline.withOpacity(0.2),
+                    ),
+                  ),
+                  child: Text(
+                    '把时间寄存在温柔里',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.onSurface.withOpacity(0.75),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
